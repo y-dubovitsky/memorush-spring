@@ -2,8 +2,9 @@ package ru.dubovitsky.flashcardsspring.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Collectors;
+
 
 @Slf4j
 public class JWTFilter extends UsernamePasswordAuthenticationFilter {
@@ -66,7 +70,13 @@ public class JWTFilter extends UsernamePasswordAuthenticationFilter {
                 .withIssuedAt(new Date(System.currentTimeMillis()))
                 .sign(algorithm);
 
-        response.setHeader("accessToken", accessToken);
-        response.setHeader("refreshToken", refreshToken);
+//        response.setHeader("accessToken", accessToken);
+//        response.setHeader("refreshToken", refreshToken);
+
+        Map<String, String> tokens = new HashMap();
+        tokens.put("accessToken", accessToken);
+        tokens.put("refreshToken", refreshToken);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), tokens); //TODO Посмотреть подробнее как работает
     }
 }
