@@ -54,7 +54,7 @@ public class JWTFilter extends UsernamePasswordAuthenticationFilter {
 
         String accessToken = JWT.create()
                 .withSubject(user.getUsername()) // Что за пользователь
-                .withClaim("role", user.getAuthorities()
+                .withClaim("roles", user.getAuthorities()
                         .stream()
                         .map(auth -> auth.getAuthority())
                         .collect(Collectors.toList())) // Права пользователя
