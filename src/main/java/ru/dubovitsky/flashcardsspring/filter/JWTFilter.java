@@ -50,7 +50,7 @@ public class JWTFilter extends UsernamePasswordAuthenticationFilter {
             Authentication authResult
     ) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
-        Algorithm algorithm = Algorithm.HMAC256("flashcard".getBytes());
+        Algorithm algorithm = Algorithm.HMAC256("flashcards".getBytes());
 
         String accessToken = JWT.create()
                 .withSubject(user.getUsername()) // Что за пользователь
