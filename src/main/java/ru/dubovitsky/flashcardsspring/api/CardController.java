@@ -3,6 +3,7 @@ package ru.dubovitsky.flashcardsspring.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.dubovitsky.flashcardsspring.model.Card;
 import ru.dubovitsky.flashcardsspring.service.CardService;
@@ -21,7 +22,8 @@ public class CardController {
         return ResponseEntity.ok(cardService.getAllCard());
     }
 
-    @PostMapping
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<?> addCard(@RequestBody Card card) {
         Card savedCard = cardService.addCard(card);
         return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
