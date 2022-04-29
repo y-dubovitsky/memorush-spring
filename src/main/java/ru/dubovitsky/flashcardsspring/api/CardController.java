@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.dubovitsky.flashcardsspring.model.Card;
+import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.service.CardService;
 
 import java.util.List;
@@ -29,4 +30,8 @@ public class CardController {
         return new ResponseEntity<>(savedCard, HttpStatus.CREATED);
     }
 
+    @GetMapping("/card-sets")
+    public ResponseEntity<List<CardSet>> getAllCardSet() {
+        return null;
+    }
 }

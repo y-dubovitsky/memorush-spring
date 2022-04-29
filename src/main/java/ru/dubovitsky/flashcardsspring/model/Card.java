@@ -27,6 +27,12 @@ public class Card {
     private boolean isLearned;
 
     @ManyToOne
+    private Category category;
+
+    @ManyToOne
+    private CardSet cardSet;
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
 
