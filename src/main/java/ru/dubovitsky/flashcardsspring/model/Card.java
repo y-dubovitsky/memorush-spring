@@ -1,9 +1,6 @@
 package ru.dubovitsky.flashcardsspring.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Generated;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -12,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Data
 @Table(name="flash_card_table")
+@Builder
 public class Card {
 
     @Id
@@ -25,6 +23,8 @@ public class Card {
     private boolean isFavorite;
 
     private boolean isLearned;
+
+    private String hint; // Подсказка
 
     @ManyToOne
     private Category category;
