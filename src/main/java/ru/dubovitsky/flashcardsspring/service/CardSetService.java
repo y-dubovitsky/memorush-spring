@@ -8,9 +8,12 @@ import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.facade.CardFacade;
 import ru.dubovitsky.flashcardsspring.facade.CardSetFacade;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
+import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.repository.CardSetRepository;
 
-import java.util.List;
+import java.security.Principal;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 public class CardSetService {
 
     private CardSetRepository cardSetRepository;
+    private UserService userService;
 
     public CardSet saveCardSet(CardSetRequestDto cardSetRequestDto) {
         CardSet savedCardSet = cardSetRepository.save(CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto));
@@ -26,8 +30,9 @@ public class CardSetService {
         return savedCardSet;
     }
 
-    public List<CardSet> getAllCardSets() {
-        return cardSetRepository.findAll();
+    public Optional<Set<CardSet>> getAllUserCardSets(Principal principal) {
+        User user = userService.getUserByUsername(principal.getName());
+        return cardSetRepository.findAllByUser(user);
     }
 
     public boolean deleteCardSetById(Long id) {

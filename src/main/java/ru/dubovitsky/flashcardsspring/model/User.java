@@ -45,10 +45,10 @@ public class User {
     private RoleEnum role;
 
     @OneToMany(
+            mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JoinColumn(name = "user_id")
     private List<CardSet> cardSetList;
 
     @PrePersist

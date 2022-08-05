@@ -31,6 +31,9 @@ public class CardSet {
     //FIXME Добавить сущность - ПАПКА
     private String folder;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User user;
+
     @CreatedDate
     @Column(name = "created_at", updatable = false)
     @JsonFormat(pattern="yyyy-MM-dd")

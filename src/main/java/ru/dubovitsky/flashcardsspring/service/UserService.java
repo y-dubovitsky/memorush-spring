@@ -7,10 +7,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dubovitsky.flashcardsspring.dto.request.UserUpdateRequestDto;
+import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.model.enums.RoleEnum;
 import ru.dubovitsky.flashcardsspring.repository.UserRepository;
 
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -53,6 +55,5 @@ public class UserService {
         log.info(String.format("User %s updated", user.getUsername()));
         return userRepository.save(user);
     }
-
 
 }

@@ -10,8 +10,11 @@ import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.service.CardSetService;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @CrossOrigin
@@ -24,9 +27,11 @@ public class CardSetController {
     private CardSetService cardSetService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<CardSet>> getAllCardSet() {
-        List<CardSet> allCardSet = cardSetService.getAllCardSets();
-        return new ResponseEntity<>(allCardSet, HttpStatus.OK);
+    public ResponseEntity<?> getAllUserCardSets(Principal principal) {
+        Set<CardSet> cardSet = cardSetService.getAllUserCardSets(principal).orElseThrow(
+                () -> new RuntimeException("There is no card set")
+        );
+        return new ResponseEntity<>(cardSet, HttpStatus.OK);
     }
 
     @PostMapping("/add")
