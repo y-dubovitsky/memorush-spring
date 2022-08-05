@@ -24,14 +24,12 @@ public class CardSetController {
     private CardSetService cardSetService;
 
     @GetMapping("/all")
-    @PreAuthorize("permitAll()")
     public ResponseEntity<List<CardSet>> getAllCardSet() {
         List<CardSet> allCardSet = cardSetService.getAllCardSets();
         return new ResponseEntity<>(allCardSet, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    @PreAuthorize("hasAnyAuthority('SUPER_ADMIN', 'OWNER')")
     public ResponseEntity<?> addCardSet(@RequestBody CardSetRequestDto cardSetRequestDto) {
         var saved = cardSetService.saveCardSet(cardSetRequestDto);
         if (Objects.isNull(saved)) {
