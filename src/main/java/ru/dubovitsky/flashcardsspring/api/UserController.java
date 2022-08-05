@@ -3,6 +3,7 @@ package ru.dubovitsky.flashcardsspring.api;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.dubovitsky.flashcardsspring.dto.request.UserRegistrationRequestDto;
 import ru.dubovitsky.flashcardsspring.dto.request.UserUpdateRequestDto;
@@ -29,6 +30,7 @@ public class UserController {
     }
 
     @PutMapping("/updateUserData")
+    @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'SUPER_ADMIN', 'OWNER')")
     public ResponseEntity<?> updateUserData(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
         User user = userService.updateUser(userUpdateRequestDto);
         if (Objects.isNull(user)) {
