@@ -26,7 +26,7 @@ public class UserController {
         if (Objects.isNull(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        return ResponseEntity.ok(UserFacade.userToUserResponseDto(user));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/updateUserData")
