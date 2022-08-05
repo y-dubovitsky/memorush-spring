@@ -4,6 +4,6 @@ import ru.dubovitsky.flashcardsspring.security.model.AppUser;
 
 public interface AppUserServiceDao  {
 
-    AppUser getAppUserByName(String name);
+    AppUser getAppUserByUsername(String name);
 
 }

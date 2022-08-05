@@ -1,4 +1,4 @@
-package ru.dubovitsky.flashcardsspring.dto;
+package ru.dubovitsky.flashcardsspring.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Builder
 @Getter @Setter
 @AllArgsConstructor
-public class CardDto {
+public class CardRequestDto {
 
     private String frontSide;
     private String backSide;

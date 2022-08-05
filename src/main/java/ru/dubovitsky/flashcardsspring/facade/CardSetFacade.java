@@ -1,20 +1,20 @@
 package ru.dubovitsky.flashcardsspring.facade;
 
-import ru.dubovitsky.flashcardsspring.dto.CardSetDto;
+import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
 
 import java.util.stream.Collectors;
 
 public class CardSetFacade {
 
-    public static CardSet cardSetDtoToCardSet(CardSetDto cardSetDto) {
+    public static CardSet cardSetRequestDtoToCardSet(CardSetRequestDto cardSetRequestDto) {
         return CardSet.builder()
-                .name(cardSetDto.getTitle())
-                .description(cardSetDto.getDescription())
-                .tags(cardSetDto.getTags())
-                .cardList(cardSetDto.getFlashCardsData()
+                .name(cardSetRequestDto.getTitle())
+                .description(cardSetRequestDto.getDescription())
+                .tags(cardSetRequestDto.getTags())
+                .cardList(cardSetRequestDto.getFlashCardArray()
                         .stream()
-                        .map(cardDto -> CardFacade.cardDtoToCard(cardDto))
+                        .map(cardDto -> CardFacade.cardRequestDtoToCard(cardDto))
                         .collect(Collectors.toList()))
                 .build();
     }

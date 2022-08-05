@@ -5,11 +5,16 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.dubovitsky.flashcardsspring.security.config.JwtConfig;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -20,9 +25,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+//TODO Вынести все константы из текста в поля!
 public class JwtTokenVerifierFilter extends OncePerRequestFilter {
 
-    private final String key = "ru.dubovitsky.flashcardsspring.security.filter.JwtUsernameAndPasswordAuthFilter@1997e7b2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@c0ee2c9";
+    private final JwtConfig jwtConfig;
+
+    public JwtTokenVerifierFilter(JwtConfig jwtConfig) {
+        this.jwtConfig = jwtConfig;
+    }
 
     @Override
     protected void doFilterInternal(
@@ -32,14 +42,14 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith("Bearer ")) {
+        if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith(jwtConfig.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             return; //! Necessarily
         }
 
-        String token = authHeader.replace("Bearer ", "");
+        String token = authHeader.replace(jwtConfig.getTokenPrefix(), "");
         Jws<Claims> claimsJws = Jwts.parser()
-                .setSigningKey(Keys.hmacShaKeyFor(key.getBytes()))
+                .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecurityKey().getBytes()))
                 .parseClaimsJws(token);
 
         Claims body = claimsJws.getBody();

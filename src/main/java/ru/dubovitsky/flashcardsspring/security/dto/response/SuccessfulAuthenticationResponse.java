@@ -1,11 +1,11 @@
-package ru.dubovitsky.flashcardsspring.security.filter.response;
+package ru.dubovitsky.flashcardsspring.security.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TokenVerifierFilterResponse {
+public class SuccessfulAuthenticationResponse {
 
     private String token;
     private String username;

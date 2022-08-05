@@ -1,15 +1,15 @@
 package ru.dubovitsky.flashcardsspring.facade;
 
-import ru.dubovitsky.flashcardsspring.dto.CardDto;
+import ru.dubovitsky.flashcardsspring.dto.request.CardRequestDto;
 import ru.dubovitsky.flashcardsspring.model.Card;
 
 public class CardFacade {
 
-    public static Card cardDtoToCard(CardDto cardDto) {
+    public static Card cardRequestDtoToCard(CardRequestDto cardRequestDto) {
         return Card.builder()
-                .frontSide(cardDto.getFrontSide())
-                .backSide(cardDto.getBackSide())
-                .hint(cardDto.getHint())
+                .frontSide(cardRequestDto.getFrontSide())
+                .backSide(cardRequestDto.getBackSide())
+                .hint(cardRequestDto.getHint())
                 .build();
     }
 

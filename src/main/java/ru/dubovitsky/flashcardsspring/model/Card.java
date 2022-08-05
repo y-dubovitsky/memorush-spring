@@ -8,7 +8,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-@Table(name="flash_card_table")
 @Builder
 public class Card {
 
@@ -28,12 +27,5 @@ public class Card {
 
     @ManyToOne
     private Category category;
-
-    @ManyToOne
-    private CardSet cardSet;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 
 }

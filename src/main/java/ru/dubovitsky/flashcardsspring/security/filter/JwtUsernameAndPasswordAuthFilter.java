@@ -1,8 +1,6 @@
 package ru.dubovitsky.flashcardsspring.security.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,8 +8,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import ru.dubovitsky.flashcardsspring.security.filter.request.UsernameAndPasswordAuthRequest;
-import ru.dubovitsky.flashcardsspring.security.filter.response.TokenVerifierFilterResponse;
+import ru.dubovitsky.flashcardsspring.security.config.JwtConfig;
+import ru.dubovitsky.flashcardsspring.security.dto.request.UsernameAndPasswordAuthRequest;
+import ru.dubovitsky.flashcardsspring.security.dto.response.SuccessfulAuthenticationResponse;
+import ru.dubovitsky.flashcardsspring.security.facade.SuccessfulAuthenticationFacade;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -24,14 +24,13 @@ import java.util.Date;
 
 public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final JwtConfig jwtConfig;
     private final AuthenticationManager authenticationManager;
 
-    public JwtUsernameAndPasswordAuthFilter(AuthenticationManager authenticationManager1) {
-        this.authenticationManager = authenticationManager1;
+    public JwtUsernameAndPasswordAuthFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+        this.authenticationManager = authenticationManager;
+        this.jwtConfig = jwtConfig;
     }
-
-    //TODO Вынести в отдельный конфиг
-    private final String key = "ru.dubovitsky.flashcardsspring.security.filter.JwtUsernameAndPasswordAuthFilter@1997e7b2, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@c0ee2c9";
 
     @Override
     public Authentication attemptAuthentication(
@@ -54,6 +53,7 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
         }
     }
 
+    //TODO Додумать этот механизм, слишком запутанный код
     @Override
     protected void successfulAuthentication(
             HttpServletRequest request,
@@ -61,27 +61,30 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
             FilterChain chain,
             Authentication authResult
     ) throws IOException, ServletException {
-        String token = Jwts.builder()
+        //! Get token
+        String token = createToken(authResult);
+        //! Set headers
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        //! Set body
+        String responseBody = SuccessfulAuthenticationFacade.successfulAuthenticationResponseToJsonString(
+                new SuccessfulAuthenticationResponse(token, authResult.getName())
+        );
+        PrintWriter out = response.getWriter();
+        out.print(responseBody);
+        out.flush();
+    }
+
+    //TODO Вынести в утилитный метод?
+    private String createToken(Authentication authResult) {
+        //! Create token
+        String token = jwtConfig.getTokenPrefix() + Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(28)))
-                .signWith(Keys.hmacShaKeyFor(key.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(jwtConfig.getSecurityKey().getBytes()))
                 .compact();
-
-        PrintWriter out = response.getWriter();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        out.print(this.getJsonTokenVerifierFilterResponse("Bearer " + token, authResult.getName()));
-        out.flush();
-    }
-
-    private String getJsonTokenVerifierFilterResponse(String token, String username) {
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
-        String tokenVerifierFilterResponse
-                = gson.toJson(new TokenVerifierFilterResponse(token, username));
-
-        return tokenVerifierFilterResponse;
+        return token;
     }
 }

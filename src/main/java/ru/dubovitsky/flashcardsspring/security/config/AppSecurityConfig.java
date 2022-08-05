@@ -14,12 +14,16 @@ import ru.dubovitsky.flashcardsspring.security.filter.JwtUsernameAndPasswordAuth
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    private final JwtConfig jwtConfig;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilter(new JwtUsernameAndPasswordAuthFilter(authenticationManager()));
-        http.addFilterAfter(new JwtTokenVerifierFilter(), JwtUsernameAndPasswordAuthFilter.class);
+        //! Проблема в том, что эти два фильтра не управляются спрингом, т.к. мы создали их через new()
+        http.addFilter(new JwtUsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig));
+        http.addFilterAfter(new JwtTokenVerifierFilter(jwtConfig), JwtUsernameAndPasswordAuthFilter.class);
     }
+
 }

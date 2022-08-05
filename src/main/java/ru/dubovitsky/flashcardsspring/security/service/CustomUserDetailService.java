@@ -11,13 +11,13 @@ public class CustomUserDetailService implements UserDetailsService {
 
     private final AppUserServiceDao userDetailsServiceDao;
 
-    public CustomUserDetailService(@Qualifier("mock") AppUserServiceDao userDetailsServiceDao) {
+    public CustomUserDetailService(@Qualifier("database") AppUserServiceDao userDetailsServiceDao) {
         this.userDetailsServiceDao = userDetailsServiceDao;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails userDetails = userDetailsServiceDao.getAppUserByName(username);
+        UserDetails userDetails = userDetailsServiceDao.getAppUserByUsername(username);
         return userDetails;
     }
 }

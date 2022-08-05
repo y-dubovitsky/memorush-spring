@@ -1,4 +1,4 @@
-package ru.dubovitsky.flashcardsspring.security.filter.request;
+package ru.dubovitsky.flashcardsspring.security.dto.request;
 
 import lombok.Data;
 
