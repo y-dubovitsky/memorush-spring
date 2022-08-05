@@ -30,7 +30,7 @@ public class UserService {
     public User addNewUser(User user) {
         boolean present = userRepository.findByUsername(user.getUsername()).isPresent();
         if(present) {
-            throw new RuntimeException(String.format("User with name - %s not found", user.getUsername()));
+            throw new RuntimeException(String.format("User with name - %s already exists", user.getUsername()));
         }
         //TODO В каком месте добавить проверку?
         if(!user.getPassword().equals(user.getPassword2())) {
