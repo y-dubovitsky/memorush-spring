@@ -11,6 +11,7 @@ import ru.dubovitsky.flashcardsspring.facade.UserFacade;
 import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.service.UserService;
 
+import java.security.Principal;
 import java.util.Objects;
 
 @RestController
@@ -22,17 +23,22 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<?> registerNewUser(@RequestBody UserRegistrationRequestDto userRegistrationRequestDto) {
-        User user = userService.addNewUser(UserFacade.userRegistrationDtoToUser(userRegistrationRequestDto));
+        User user = userService.createNewUser(UserFacade.userRegistrationDtoToUser(userRegistrationRequestDto));
         if (Objects.isNull(user)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(
+                    String.format("User %s already exists", userRegistrationRequestDto.getUsername()),
+                            HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/updateUserData")
     @PreAuthorize("hasAnyAuthority('USER', 'ADMIN', 'SUPER_ADMIN', 'OWNER')")
-    public ResponseEntity<?> updateUserData(@RequestBody UserUpdateRequestDto userUpdateRequestDto) {
-        User user = userService.updateUser(userUpdateRequestDto);
+    public ResponseEntity<?> updateUserData(
+            @RequestBody UserUpdateRequestDto userUpdateRequestDto,
+            Principal principal
+    ) {
+        User user = userService.updateUser(userUpdateRequestDto, principal);
         if (Objects.isNull(user)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

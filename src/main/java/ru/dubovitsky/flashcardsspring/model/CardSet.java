@@ -1,13 +1,15 @@
 package ru.dubovitsky.flashcardsspring.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -31,6 +33,7 @@ public class CardSet {
     //FIXME Добавить сущность - ПАПКА
     private String folder;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
@@ -45,11 +48,11 @@ public class CardSet {
     private LocalDateTime updatedAt;
 
     @OneToMany(
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
+            cascade = CascadeType.ALL
     )
     @JoinColumn(name = "cardset_id")
-    private List<Card> cardList;
+    //! Имя cardList - принципиально важно! Нужно создать ResponseDTO
+    private Set<Card> cardList;
 
     @PrePersist
     public void prePersist() {
@@ -61,4 +64,21 @@ public class CardSet {
         updatedAt = LocalDateTime.now();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CardSet cardSet = (CardSet) o;
+        return Objects.equals(id, cardSet.id) &&
+                Objects.equals(name, cardSet.name) &&
+                Objects.equals(description, cardSet.description) &&
+                Objects.equals(tags, cardSet.tags) &&
+                Objects.equals(isFavorite, cardSet.isFavorite) &&
+                Objects.equals(folder, cardSet.folder);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description, tags, isFavorite, folder);
+    }
 }

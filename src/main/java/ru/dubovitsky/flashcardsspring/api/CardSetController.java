@@ -11,9 +11,7 @@ import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.service.CardSetService;
 
 import java.security.Principal;
-import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -28,15 +26,18 @@ public class CardSetController {
 
     @GetMapping("/all")
     public ResponseEntity<?> getAllUserCardSets(Principal principal) {
-        Set<CardSet> cardSet = cardSetService.getAllUserCardSets(principal).orElseThrow(
+        Set<CardSet> cardSet = cardSetService.getAllUserCardSetsList(principal).orElseThrow(
                 () -> new RuntimeException("There is no card set")
         );
         return new ResponseEntity<>(cardSet, HttpStatus.OK);
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addCardSet(@RequestBody CardSetRequestDto cardSetRequestDto) {
-        var saved = cardSetService.saveCardSet(cardSetRequestDto);
+    public ResponseEntity<?> addCardSet(
+            @RequestBody CardSetRequestDto cardSetRequestDto,
+            Principal principal
+    ) {
+        var saved = cardSetService.createCardSet(cardSetRequestDto, principal);
         if (Objects.isNull(saved)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
@@ -50,16 +51,16 @@ public class CardSetController {
     ) {
         var saved = cardSetService.updateCardSetById(id, cardSetRequestDto);
         if (Objects.isNull(saved)) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(String.format("CardSet not exist with id: %s", id), HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Long> deleteCardSet(@PathVariable Long id) {
+    public ResponseEntity<?> deleteCardSet(@PathVariable Long id) {
         var isRemoved = cardSetService.deleteCardSetById(id);
         if (!isRemoved) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(String.format("CardSet with id: %s didn't deleted ", id), HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(id, HttpStatus.OK);
     }

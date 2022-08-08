@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.facade.CardFacade;
 import ru.dubovitsky.flashcardsspring.facade.CardSetFacade;
@@ -12,6 +13,7 @@ import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.repository.CardSetRepository;
 
 import java.security.Principal;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,19 +21,30 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
+@Transactional
 public class CardSetService {
 
     private CardSetRepository cardSetRepository;
     private UserService userService;
 
-    public CardSet saveCardSet(CardSetRequestDto cardSetRequestDto) {
-        CardSet savedCardSet = cardSetRepository.save(CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto));
+    public Optional<Collection<CardSet>> getAllCardSets() {
+        return Optional.of(cardSetRepository.findAll());
+    }
+
+    public CardSet createCardSet(
+            CardSetRequestDto cardSetRequestDto,
+            Principal principal
+    ) {
+        User user = userService.getCurrentUserByPrincipal(principal);
+        CardSet cardSet = CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto);
+        cardSet.setUser(user);
+        CardSet savedCardSet = cardSetRepository.save(cardSet);
         log.info(String.format("CardSet with id %s saved", savedCardSet.getId()));
         return savedCardSet;
     }
 
-    public Optional<Set<CardSet>> getAllUserCardSets(Principal principal) {
-        User user = userService.getUserByUsername(principal.getName());
+    public Optional<Set<CardSet>> getAllUserCardSetsList(Principal principal) {
+        User user = userService.getCurrentUserByPrincipal(principal);
         return cardSetRepository.findAllByUser(user);
     }
 
@@ -56,10 +69,10 @@ public class CardSetService {
         cardSet.setCardList(cardSetRequestDto.getFlashCardArray()
                 .stream()
                 .map(cardDto -> CardFacade.cardRequestDtoToCard(cardDto))
-                .collect(Collectors.toList()));
+                .collect(Collectors.toSet()));
 
-        cardSetRepository.save(cardSet);
+        CardSet updatedCardSet = cardSetRepository.save(cardSet);
         log.info(String.format("Card set with id: %s updated", id));
-        return cardSet;
+        return updatedCardSet;
     }
 }

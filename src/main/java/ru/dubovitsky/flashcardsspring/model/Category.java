@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -19,6 +20,6 @@ public class Category {
     private String name;
 
     @OneToMany
-    private List<Card> card;
+    private Set<Card> card;
 
 }

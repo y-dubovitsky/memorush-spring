@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @Getter @Setter
@@ -16,6 +16,6 @@ public class CardSetRequestDto {
     private String tags;
     private String description;
 
-    private List<CardRequestDto> flashCardArray;
+    private Set<CardRequestDto> flashCardArray;
 
 }

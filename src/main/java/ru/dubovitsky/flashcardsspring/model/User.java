@@ -9,6 +9,7 @@ import ru.dubovitsky.flashcardsspring.model.enums.RoleEnum;
 import javax.management.relation.Role;
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -26,9 +27,13 @@ public class User {
     private Long id;
     private String firstName;
     private String lastName;
+
+    @Column(unique = true, updatable = true)
     private String username;
     private String password;
     private String password2;
+
+    @Column(unique = true, updatable = true)
     private String email;
 
     @CreatedDate
@@ -49,7 +54,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<CardSet> cardSetList;
+    private Set<CardSet> cardSetList;
 
     @PrePersist
     public void prePersist() {

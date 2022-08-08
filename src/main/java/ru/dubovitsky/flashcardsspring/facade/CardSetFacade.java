@@ -15,7 +15,7 @@ public class CardSetFacade {
                 .cardList(cardSetRequestDto.getFlashCardArray()
                         .stream()
                         .map(cardDto -> CardFacade.cardRequestDtoToCard(cardDto))
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toSet()))
                 .build();
     }
 
