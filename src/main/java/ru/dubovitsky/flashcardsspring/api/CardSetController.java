@@ -7,12 +7,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
+import ru.dubovitsky.flashcardsspring.dto.response.CardSetResponseDto;
+import ru.dubovitsky.flashcardsspring.facade.CardSetFacade;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.service.CardSetService;
 
 import java.security.Principal;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @CrossOrigin
@@ -29,7 +32,11 @@ public class CardSetController {
         Set<CardSet> cardSet = cardSetService.getAllUserCardSetsList(principal).orElseThrow(
                 () -> new RuntimeException("There is no card set")
         );
-        return new ResponseEntity<>(cardSet, HttpStatus.OK);
+        Set<CardSetResponseDto> response = cardSet.stream()
+                .map(set -> CardSetFacade.cardSetToCardSetResponseDto(set))
+                .collect(Collectors.toSet());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/add")

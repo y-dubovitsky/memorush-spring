@@ -28,7 +28,7 @@ public class CardSet {
 
     private String tags;
 
-    private Boolean isFavorite;
+    private boolean isFavorite = false;
 
     //FIXME Добавить сущность - ПАПКА
     private String folder;
