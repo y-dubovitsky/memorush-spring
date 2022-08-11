@@ -64,6 +64,7 @@ public class CardSetService {
                 () -> new ResourceNotFoundException("CardSet not exist with id: " + id));
 
         cardSet.setName(cardSetRequestDto.getTitle());
+        cardSet.setFavorite(cardSetRequestDto.isFavorite());
         cardSet.setDescription(cardSetRequestDto.getDescription());
         cardSet.setTags(cardSetRequestDto.getTags());
         cardSet.setCardList(cardSetRequestDto.getFlashCardArray()

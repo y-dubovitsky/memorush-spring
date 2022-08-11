@@ -1,7 +1,6 @@
 package ru.dubovitsky.flashcardsspring.facade;
 
 import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
-import ru.dubovitsky.flashcardsspring.dto.response.CardResponseDto;
 import ru.dubovitsky.flashcardsspring.dto.response.CardSetResponseDto;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
 
@@ -31,7 +30,7 @@ public class CardSetFacade {
                 .isFavorite(cardSet.isFavorite())
                 .createdAt(cardSet.getCreatedAt())
                 .updatedAt(cardSet.getUpdatedAt())
-                .cardList(
+                .flashCardArray(
                         cardSet.getCardList()
                                 .stream()
                                 .map(card -> CardFacade.cardToCardResponseDto(card))

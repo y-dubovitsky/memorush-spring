@@ -23,6 +23,6 @@ public class CardSetResponseDto {
     private LocalDateTime createdAt;
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDateTime updatedAt;
-    private Set<CardResponseDto> cardList;
+    private Set<CardResponseDto> flashCardArray;
 
 }

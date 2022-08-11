@@ -60,7 +60,7 @@ public class CardSetController {
         if (Objects.isNull(saved)) {
             return new ResponseEntity<>(String.format("CardSet not exist with id: %s", id), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return ResponseEntity.ok(CardSetFacade.cardSetToCardSetResponseDto(saved));
     }
 
     @DeleteMapping("/delete/{id}")
