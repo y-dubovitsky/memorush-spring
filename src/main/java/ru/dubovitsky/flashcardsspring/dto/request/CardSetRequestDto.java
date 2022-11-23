@@ -12,7 +12,7 @@ import java.util.Set;
 @Builder
 public class CardSetRequestDto {
 
-    private String title;
+    private String name;
     private String tags;
     private String description;
     private boolean isFavorite;

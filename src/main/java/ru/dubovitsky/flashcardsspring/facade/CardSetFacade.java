@@ -10,7 +10,7 @@ public class CardSetFacade {
 
     public static CardSet cardSetRequestDtoToCardSet(CardSetRequestDto cardSetRequestDto) {
         return CardSet.builder()
-                .name(cardSetRequestDto.getTitle())
+                .name(cardSetRequestDto.getName())
                 .description(cardSetRequestDto.getDescription())
                 .tags(cardSetRequestDto.getTags())
                 .cardList(cardSetRequestDto.getFlashCardArray()

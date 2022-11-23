@@ -63,7 +63,7 @@ public class CardSetService {
         CardSet cardSet = cardSetRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("CardSet not exist with id: " + id));
 
-        cardSet.setName(cardSetRequestDto.getTitle());
+        cardSet.setName(cardSetRequestDto.getName());
         cardSet.setFavorite(cardSetRequestDto.isFavorite());
         cardSet.setDescription(cardSetRequestDto.getDescription());
         cardSet.setTags(cardSetRequestDto.getTags());
