@@ -9,8 +9,10 @@ import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.facade.CardFacade;
 import ru.dubovitsky.flashcardsspring.facade.CardSetFacade;
 import ru.dubovitsky.flashcardsspring.facade.CategoryFacade;
+import ru.dubovitsky.flashcardsspring.facade.TagFacade;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.model.Category;
+import ru.dubovitsky.flashcardsspring.model.Tag;
 import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.repository.CardSetRepository;
 
@@ -28,7 +30,8 @@ public class CardSetService {
 
     private CardSetRepository cardSetRepository;
     private final CategoryService categoryService;
-    private UserService userService;
+    private final TagService tagService;
+    private final UserService userService;
 
     public Optional<Collection<CardSet>> getAllCardSets() {
         return Optional.of(cardSetRepository.findAll());
@@ -38,14 +41,21 @@ public class CardSetService {
             CardSetRequestDto cardSetRequestDto,
             Principal principal
     ) {
+        //! Get data for creating entities from request
         User user = userService.getCurrentUserByPrincipal(principal);
         CardSet preSavedCardSet = CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto);
 
         //TODO Как то улучшить это! Получается мы тут должны получать уже сущность, готовую для сохранения!
         Category savedCategory = categoryService.createCategory(preSavedCardSet.getCategory());
-        preSavedCardSet.setCategory(savedCategory);
-        //
+        //TODO А тут мы получаем тэги из сервиса
+        Set<Tag> preSavedTagsList = tagService.createTagCollection(
+                TagFacade.tagRequestStringToTagsList(cardSetRequestDto.getTags())
+        );
+
+        //! Set data (user, category, tagList) into CardSet entity
         preSavedCardSet.setUser(user);
+        preSavedCardSet.setCategory(savedCategory);
+        preSavedCardSet.setTagsList(preSavedTagsList);
         CardSet savedCardSet = cardSetRepository.save(preSavedCardSet);
         log.info(String.format("CardSet with id %s saved", savedCardSet.getId()));
         return savedCardSet;
@@ -78,6 +88,15 @@ public class CardSetService {
         );
         //! Update category
         cardSet.setCategory(newCategory);
+
+        //! Create or get new tag list
+        Set<Tag> newTagsList = tagService.createTagCollection(
+                TagFacade.tagRequestStringToTagsList(
+                        cardSetRequestDto.getTags()
+                )
+        );
+        //! Update tagsList
+        cardSet.setTagsList(newTagsList);
 
         cardSet.setName(cardSetRequestDto.getName());
         cardSet.setFavorite(cardSetRequestDto.isFavorite());

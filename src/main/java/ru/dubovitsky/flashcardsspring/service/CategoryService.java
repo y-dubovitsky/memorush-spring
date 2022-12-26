@@ -20,9 +20,9 @@ public class CategoryService {
     public Category createCategory(Category category) {
         Optional<Category> savedCategory = categoryRepository.findByName(category.getName());
         if (savedCategory.isPresent()) {
-            log.info(String.format("Category with name %s already exists", category.getName()));
             return savedCategory.get();
         } else {
+            log.info(String.format("New Category with name %s saved", category.getName()));
             return categoryRepository.save(category);
         }
     }

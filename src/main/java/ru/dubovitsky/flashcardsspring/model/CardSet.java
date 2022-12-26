@@ -49,7 +49,14 @@ public class CardSet {
     @ManyToOne(fetch = FetchType.LAZY)
     private Folder folder;
 
-    @ManyToMany(mappedBy = "cardSetsList")
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "cardSet_tag",
+            joinColumns = @JoinColumn(name = "cardSet_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
     private Set<Tag> tagsList;
 
     @CreatedDate

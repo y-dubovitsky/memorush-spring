@@ -21,10 +21,7 @@ public class Tag {
 
     private String name;
 
-    @ManyToMany
-    @JoinTable(name = "tag_cardSet",
-            joinColumns = {@JoinColumn(name = "fk_tag")},
-            inverseJoinColumns = {@JoinColumn(name = "fk_cardSet")})
+    @ManyToMany(mappedBy = "tagsList")
     private Set<CardSet> cardSetsList;
 
 }
