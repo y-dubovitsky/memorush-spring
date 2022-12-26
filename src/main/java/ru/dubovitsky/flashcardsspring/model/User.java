@@ -6,20 +6,17 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import ru.dubovitsky.flashcardsspring.model.enums.RoleEnum;
 
-import javax.management.relation.Role;
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "user_table")
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "user_table")
 public class User {
 
     @Id

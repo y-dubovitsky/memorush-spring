@@ -10,6 +10,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter @Setter
 @Builder
+@Table(name = "card_table")
 public class Card {
 
     @Id

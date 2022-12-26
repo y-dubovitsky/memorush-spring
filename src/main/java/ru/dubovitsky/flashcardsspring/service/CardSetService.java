@@ -66,7 +66,6 @@ public class CardSetService {
         cardSet.setName(cardSetRequestDto.getName());
         cardSet.setFavorite(cardSetRequestDto.isFavorite());
         cardSet.setDescription(cardSetRequestDto.getDescription());
-        cardSet.setTags(cardSetRequestDto.getTags());
         cardSet.setCardList(cardSetRequestDto.getFlashCardArray()
                 .stream()
                 .map(cardDto -> CardFacade.cardRequestDtoToCard(cardDto))

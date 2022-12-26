@@ -8,7 +8,6 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -16,6 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "cardset_table")
 public class CardSet {
 
     @Id
@@ -26,16 +26,31 @@ public class CardSet {
 
     private String description;
 
-    private String tags;
-
     private boolean isFavorite = false;
-
-    //FIXME Добавить сущность - ПАПКА
-    private String folder;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
+
+    @OneToMany(
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "fk_cardset")
+    //! Имя cardList - принципиально важно! Нужно создать ResponseDTO
+    private Set<Card> cardList;
+
+    @ManyToOne(
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL
+    )
+    @JoinColumn(name = "fk_cardset")
+    private Category category;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Folder folder;
+
+    @ManyToMany(mappedBy = "cardSetsList")
+    private Set<Tag> tagsList;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
@@ -47,13 +62,6 @@ public class CardSet {
     @JsonFormat(pattern="yyyy-MM-dd")
     private LocalDateTime updatedAt;
 
-    @OneToMany(
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(name = "cardset_id")
-    //! Имя cardList - принципиально важно! Нужно создать ResponseDTO
-    private Set<Card> cardList;
-
     @PrePersist
     public void prePersist() {
         createdAt = LocalDateTime.now();
@@ -64,21 +72,4 @@ public class CardSet {
         updatedAt = LocalDateTime.now();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        CardSet cardSet = (CardSet) o;
-        return Objects.equals(id, cardSet.id) &&
-                Objects.equals(name, cardSet.name) &&
-                Objects.equals(description, cardSet.description) &&
-                Objects.equals(tags, cardSet.tags) &&
-                Objects.equals(isFavorite, cardSet.isFavorite) &&
-                Objects.equals(folder, cardSet.folder);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, description, tags, isFavorite, folder);
-    }
 }
