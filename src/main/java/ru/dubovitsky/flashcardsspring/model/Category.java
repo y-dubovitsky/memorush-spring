@@ -20,7 +20,7 @@ public class Category {
 
     private String name;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "fk_category")
     private Set<CardSet> cardSetsList;
 

@@ -8,7 +8,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dubovitsky.flashcardsspring.dto.request.CardSetRequestDto;
 import ru.dubovitsky.flashcardsspring.facade.CardFacade;
 import ru.dubovitsky.flashcardsspring.facade.CardSetFacade;
+import ru.dubovitsky.flashcardsspring.facade.CategoryFacade;
 import ru.dubovitsky.flashcardsspring.model.CardSet;
+import ru.dubovitsky.flashcardsspring.model.Category;
 import ru.dubovitsky.flashcardsspring.model.User;
 import ru.dubovitsky.flashcardsspring.repository.CardSetRepository;
 
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 public class CardSetService {
 
     private CardSetRepository cardSetRepository;
+    private final CategoryService categoryService;
     private UserService userService;
 
     public Optional<Collection<CardSet>> getAllCardSets() {
@@ -36,9 +39,14 @@ public class CardSetService {
             Principal principal
     ) {
         User user = userService.getCurrentUserByPrincipal(principal);
-        CardSet cardSet = CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto);
-        cardSet.setUser(user);
-        CardSet savedCardSet = cardSetRepository.save(cardSet);
+        CardSet preSavedCardSet = CardSetFacade.cardSetRequestDtoToCardSet(cardSetRequestDto);
+
+        //TODO Как то улучшить это! Получается мы тут должны получать уже сущность, готовую для сохранения!
+        Category savedCategory = categoryService.createCategory(preSavedCardSet.getCategory());
+        preSavedCardSet.setCategory(savedCategory);
+        //
+        preSavedCardSet.setUser(user);
+        CardSet savedCardSet = cardSetRepository.save(preSavedCardSet);
         log.info(String.format("CardSet with id %s saved", savedCardSet.getId()));
         return savedCardSet;
     }
@@ -62,6 +70,14 @@ public class CardSetService {
     public CardSet updateCardSetById(Long id, CardSetRequestDto cardSetRequestDto) {
         CardSet cardSet = cardSetRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException("CardSet not exist with id: " + id));
+
+        //! Create or get new category
+        Category newCategory = categoryService.createCategory(
+                CategoryFacade.categoryNameToCategory(
+                        cardSetRequestDto.getCategoryName())
+        );
+        //! Update category
+        cardSet.setCategory(newCategory);
 
         cardSet.setName(cardSetRequestDto.getName());
         cardSet.setFavorite(cardSetRequestDto.isFavorite());

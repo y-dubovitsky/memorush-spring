@@ -40,7 +40,7 @@ public class CardSet {
     private Set<Card> cardList;
 
     @ManyToOne(
-            fetch = FetchType.LAZY,
+            fetch = FetchType.EAGER,
             cascade = CascadeType.ALL
     )
     @JoinColumn(name = "fk_cardset")

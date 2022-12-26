@@ -15,6 +15,7 @@ public class CardSetRequestDto {
     private String name;
     private String tags;
     private String description;
+    private String categoryName;
     private boolean isFavorite;
 
     private Set<CardRequestDto> flashCardArray;

@@ -17,6 +17,7 @@ public class CardSetResponseDto {
     private String name;
     private String description;
     private String tags;
+    private String categoryName;
     private Boolean isFavorite;
     private String folder;
     @JsonFormat(pattern="yyyy-MM-dd")
