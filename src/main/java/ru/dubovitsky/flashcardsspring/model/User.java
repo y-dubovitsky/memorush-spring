@@ -16,7 +16,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_table")
+@Table(
+        name = "user_table",
+        indexes = {@Index(name = "idx_username", columnList = "username", unique = true),
+                @Index(name = "idx_email", columnList = "email", unique = true)}
+)
 public class User {
 
     @Id
@@ -25,7 +29,7 @@ public class User {
     private String firstName;
     private String lastName;
 
-    @Column(unique = true, updatable = true)
+    @Column(name = "username", unique = true, nullable = false, updatable = true)
     private String username;
     private String password;
     private String password2;

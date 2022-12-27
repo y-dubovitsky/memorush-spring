@@ -15,13 +15,18 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "cardset_table")
+@Table(
+        name = "cardset_table",
+        indexes = {@Index(name = "idx_name", columnList = "name"),
+                @Index(name = "idx_user", columnList = "user")}
+)
 public class CardSet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "name")
     private String name;
 
     private String description;
@@ -30,6 +35,7 @@ public class CardSet {
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user")
     private User user;
 
     @OneToMany(
