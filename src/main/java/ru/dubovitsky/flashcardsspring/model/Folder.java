@@ -1,6 +1,7 @@
 package ru.dubovitsky.flashcardsspring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,7 @@ public class Folder {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
+    @JsonIgnore
     private Set<CardSet> cardSetList;
 
 }

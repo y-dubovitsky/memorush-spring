@@ -56,8 +56,7 @@ public class CardSet {
     private Folder folder;
 
     @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
+            CascadeType.ALL
     })
     @JoinTable(name = "cardSet_tag",
             joinColumns = @JoinColumn(name = "cardSet_id"),

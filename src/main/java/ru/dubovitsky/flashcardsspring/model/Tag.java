@@ -1,6 +1,7 @@
 package ru.dubovitsky.flashcardsspring.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -19,9 +20,11 @@ public class Tag {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(unique = true)
     private String name;
 
     @ManyToMany(mappedBy = "tagsList")
+    @JsonIgnore
     private Set<CardSet> cardSetsList;
 
 }

@@ -18,6 +18,7 @@ import ru.dubovitsky.flashcardsspring.repository.CardSetRepository;
 
 import java.security.Principal;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,6 +38,11 @@ public class CardSetService {
         return Optional.of(cardSetRepository.findAll());
     }
 
+    public List<CardSet> searchAllCardSetsBySearchString(String search) {
+        return cardSetRepository.findByCardSetNameOrCategoryName(search, search).orElseThrow(
+                () -> new ResourceNotFoundException("CardSet not found with query: " + search));
+    }
+
     public CardSet createCardSet(
             CardSetRequestDto cardSetRequestDto,
             Principal principal
@@ -48,9 +54,7 @@ public class CardSetService {
         //TODO Как то улучшить это! Получается мы тут должны получать уже сущность, готовую для сохранения!
         Category savedCategory = categoryService.createCategory(preSavedCardSet.getCategory());
         //TODO А тут мы получаем тэги из сервиса
-        Set<Tag> preSavedTagsList = tagService.createTagCollection(
-                TagFacade.tagRequestStringToTagsList(cardSetRequestDto.getTags())
-        );
+        Set<Tag> preSavedTagsList = tagService.createTagCollection(preSavedCardSet.getTagsList());
 
         //! Set data (user, category, tagList) into CardSet entity
         preSavedCardSet.setUser(user);

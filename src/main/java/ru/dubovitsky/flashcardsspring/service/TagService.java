@@ -2,14 +2,17 @@ package ru.dubovitsky.flashcardsspring.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import ru.dubovitsky.flashcardsspring.model.Tag;
 import ru.dubovitsky.flashcardsspring.repository.TagRepository;
 
+import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
+@Transactional
 public class TagService {
 
     private final TagRepository tagRepository;
@@ -18,14 +21,19 @@ public class TagService {
         this.tagRepository = tagRepository;
     }
 
+    //!TODO Разобраться с этим методом!
     public Set<Tag> createTagCollection(Set<Tag> tags) {
-        return tags.stream().map(tag -> {
-            if (tagRepository.findByName(tag.getName()).isPresent()) {
-                return tag;
-            } else {
+        Set<Tag> result = new HashSet<>();
+
+        tags.forEach(tag -> {
+            if (CollectionUtils.isEmpty(tagRepository.findByName(tag.getName()))) {
+                result.add(tagRepository.save(tag));
                 log.info(String.format("New tag with name %s saved!", tag.getName()));
-                return tagRepository.save(tag);
+            } else {
+                result.add(tag);
             }
-        }).collect(Collectors.toSet());
+        });
+
+        return result;
     }
 }

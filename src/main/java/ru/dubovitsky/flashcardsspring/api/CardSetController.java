@@ -13,6 +13,7 @@ import ru.dubovitsky.flashcardsspring.model.CardSet;
 import ru.dubovitsky.flashcardsspring.service.CardSetService;
 
 import java.security.Principal;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -36,6 +37,15 @@ public class CardSetController {
                 .map(set -> CardSetFacade.cardSetToCardSetResponseDto(set))
                 .collect(Collectors.toSet());
 
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> getCardSetBySearchParam(@RequestParam("search") String search) {
+        List<CardSet> cardSets = cardSetService.searchAllCardSetsBySearchString(search);
+        Set<CardSetResponseDto> response = cardSets.stream()
+                .map(set -> CardSetFacade.cardSetToCardSetResponseDto(set))
+                .collect(Collectors.toSet());
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
