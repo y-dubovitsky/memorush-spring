@@ -1,5 +1,5 @@
-# Run it: docker-compose up -d
-# Run only one service: docker-compose up -d memorush-spring
+# How to use it?
+# docker compose -f docker-compose-prod.yml up
 
 version: '3'
 services:
@@ -12,10 +12,10 @@ services:
       PROFILE_ACTIVE: postgres
       ADMIN_NAME: admin
       ADMIN_PASSWORD: password
-      POSTGRES_URL: jdbc:postgresql://memorush_db:5432/postgres
+      POSTGRES_URL: jdbc:postgresql://postgres_container:5432/postgres
       POSTGRES_USERNAME: postgres
       POSTGRES_PASSWORD: changeme
-      POSTGRES_DDL_AUTO: create-drop
+      POSTGRES_DDL_AUTO: create
     depends_on:
       - postgres
       - pgadmin
@@ -25,14 +25,14 @@ services:
       - "8080:8080"
 
   postgres:
-    container_name: memorush_db
-    image: postgres
+    container_name: postgres_container
+    image: postgres:alpine3.17
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       PGDATA: /data/postgres
     volumes:
-      - memorush_db:/data/postgres
+      - postgres:/data/postgres
     ports:
       - "5432:5432"
     networks:
@@ -50,6 +50,7 @@ services:
       - pgadmin:/var/lib/pgadmin
     depends_on:
       - postgres
+
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:
@@ -61,5 +62,5 @@ networks:
     driver: bridge
 
 volumes:
-  memorush_db:
+  postgres:
   pgadmin:

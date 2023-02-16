@@ -105,7 +105,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
                     <!--					I don`t know why, but created path -> target/>ydubovitsky/dining-room-spring.jar-->
-                    <imageName>ydubovitsky/memorush</imageName>
+                    <imageName>ydubovitsky/memorush-spring</imageName>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
