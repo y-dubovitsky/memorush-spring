@@ -17,4 +17,10 @@ public class JwtConfig {
     @Value("${application.jwt.tokenPrefix}")
     private String tokenPrefix;
 
+    @Value("${application.admin.name}")
+    private String initAdminName;
+
+    @Value("${application.admin.password}")
+    private String initAdminPassword;
+
 }

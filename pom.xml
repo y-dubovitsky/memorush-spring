@@ -8,11 +8,11 @@
         <version>2.5.6</version>
         <relativePath/>
     </parent>
-    <groupId>ru.dubovitsky</groupId>
-    <artifactId>flashcards-spring</artifactId>
+    <groupId>ru.ydubovitsky</groupId>
+    <artifactId>memorush-spring</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>flashcards-spring</name>
-    <description>Backend for flashcards app</description>
+    <name>memorush-spring</name>
+    <description>Backend for memorush app</description>
     <properties>
         <java.version>11</java.version>
     </properties>
@@ -94,15 +94,18 @@
             <artifactId>gson</artifactId>
             <version>2.8.9</version>
         </dependency>
-
     </dependencies>
 
     <build>
+        <!--		TODO fixme! Name of target .jat-->
+        <finalName>memorush-spring</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <!--					I don`t know why, but created path -> target/>ydubovitsky/dining-room-spring.jar-->
+                    <imageName>ydubovitsky/memorush</imageName>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>
