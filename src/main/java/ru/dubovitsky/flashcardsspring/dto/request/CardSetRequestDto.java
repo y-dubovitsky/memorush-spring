@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -13,7 +14,7 @@ import java.util.Set;
 public class CardSetRequestDto {
 
     private String name;
-    private String tags;
+    private Set<String> tags;
     private String description;
     private String categoryName;
     private boolean isFavorite;

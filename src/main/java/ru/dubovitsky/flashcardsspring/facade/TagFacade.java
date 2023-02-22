@@ -7,18 +7,16 @@ import java.util.stream.Collectors;
 
 public class TagFacade {
 
-    private static final String splitter = ",";
-
-    public static Set<Tag> tagRequestStringToTagsList(String tagsString) {
-        Set<String> tagsNameListString = Set.of(
-                tagsString
-                        .replaceAll("\\s+", "")
-                        .split(splitter)
-        );
-
-        return tagsNameListString.stream()
-                .map(tagName -> Tag.builder().name(tagName).build())
+    public static Set<Tag> tagRequestDtoToTagSet(Set<String> tagSet) {
+        return tagSet.stream()
+                .map(TagFacade::tagStringToTag)
                 .collect(Collectors.toSet());
+    }
+
+    public static Tag tagStringToTag(String tagName) {
+        return Tag.builder()
+                .name(tagName)
+                .build();
     }
 
 }

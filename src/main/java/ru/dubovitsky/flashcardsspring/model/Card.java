@@ -1,5 +1,6 @@
 package ru.dubovitsky.flashcardsspring.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
 import javax.persistence.*;
@@ -26,6 +27,10 @@ public class Card {
     private boolean isLearned = false;
 
     private String hint; // Подсказка
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JsonIgnore
+    private CardSet cardSet;
 
     @Override
     public boolean equals(Object o) {

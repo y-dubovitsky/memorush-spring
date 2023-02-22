@@ -3,6 +3,7 @@ package ru.dubovitsky.flashcardsspring.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -11,10 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-@Table(
-        name = "category_table",
-        indexes = {@Index(name = "idx_category", columnList = "name", unique = true)}
-)
+@Table(name = "category_table")
 public class Category {
 
     @Id
@@ -24,8 +22,11 @@ public class Category {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "fk_category")
-    private Set<CardSet> cardSetsList;
+    @OneToMany(
+            mappedBy = "category",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<CardSet> cardSetsList;
 
 }

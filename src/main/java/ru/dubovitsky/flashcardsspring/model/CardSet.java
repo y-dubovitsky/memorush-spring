@@ -15,11 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(
-        name = "cardset_table",
-        indexes = {@Index(name = "idx_name", columnList = "name"),
-                @Index(name = "idx_user", columnList = "user")}
-)
+@Table(name = "cardset_table")
 public class CardSet {
 
     @Id
@@ -33,36 +29,26 @@ public class CardSet {
 
     private boolean isFavorite = false;
 
+    @ManyToOne
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user")
     private User user;
 
-    @OneToMany(
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(name = "fk_cardset")
+    @OneToMany(cascade = CascadeType.ALL)
     //! Имя cardList - принципиально важно! Нужно создать ResponseDTO
     private Set<Card> cardList;
 
-    @ManyToOne(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.ALL
-    )
-    @JoinColumn(name = "fk_cardset")
+    @ManyToOne
     private Category category;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private Folder folder;
 
-    @ManyToMany(cascade = {
-            CascadeType.ALL
-    })
+    @ManyToMany
     @JoinTable(name = "cardSet_tag",
             joinColumns = @JoinColumn(name = "cardSet_id"),
             inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
-    private Set<Tag> tagsList;
+    private Set<Tag> tags;
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)

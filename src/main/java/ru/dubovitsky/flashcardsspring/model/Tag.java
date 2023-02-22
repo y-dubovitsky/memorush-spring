@@ -1,6 +1,5 @@
 package ru.dubovitsky.flashcardsspring.model;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 
@@ -23,7 +22,7 @@ public class Tag {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "tagsList")
+    @ManyToMany(mappedBy = "tags")
     @JsonIgnore
     private Set<CardSet> cardSetsList;
 

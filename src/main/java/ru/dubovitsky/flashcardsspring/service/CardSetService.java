@@ -54,12 +54,12 @@ public class CardSetService {
         //TODO Как то улучшить это! Получается мы тут должны получать уже сущность, готовую для сохранения!
         Category savedCategory = categoryService.createCategory(preSavedCardSet.getCategory());
         //TODO А тут мы получаем тэги из сервиса
-        Set<Tag> preSavedTagsList = tagService.createTagCollection(preSavedCardSet.getTagsList());
+        Set<Tag> preSavedTagsList = tagService.createTagCollection(preSavedCardSet.getTags());
 
         //! Set data (user, category, tagList) into CardSet entity
         preSavedCardSet.setUser(user);
         preSavedCardSet.setCategory(savedCategory);
-        preSavedCardSet.setTagsList(preSavedTagsList);
+        preSavedCardSet.setTags(preSavedTagsList);
         CardSet savedCardSet = cardSetRepository.save(preSavedCardSet);
         log.info(String.format("CardSet with id %s saved", savedCardSet.getId()));
         return savedCardSet;
@@ -95,12 +95,12 @@ public class CardSetService {
 
         //! Create or get new tag list
         Set<Tag> newTagsList = tagService.createTagCollection(
-                TagFacade.tagRequestStringToTagsList(
+                TagFacade.tagRequestDtoToTagSet(
                         cardSetRequestDto.getTags()
                 )
         );
         //! Update tagsList
-        cardSet.setTagsList(newTagsList);
+        cardSet.setTags(newTagsList);
 
         cardSet.setName(cardSetRequestDto.getName());
         cardSet.setFavorite(cardSetRequestDto.isFavorite());

@@ -16,11 +16,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(
-        name = "user_table",
-        indexes = {@Index(name = "idx_username", columnList = "username", unique = true),
-                @Index(name = "idx_email", columnList = "email", unique = true)}
-)
+@Table(name = "user_table")
 public class User {
 
     @Id
@@ -50,11 +46,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
 
-    @OneToMany(
-            mappedBy = "user",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
+    @OneToMany
     private Set<CardSet> cardSetList;
 
     @PrePersist
