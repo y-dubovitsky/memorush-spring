@@ -21,6 +21,13 @@ public class CustomCommandLineRunner implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        userRepository.findByUsername(jwtConfig.getInitAdminName())
+                .ifPresentOrElse(
+                        user -> log.info("Admin exists already"),
+                        this::createAdminUserOnStartup);
+    }
+
+    private void createAdminUserOnStartup() {
         User admin = User.builder()
                 .username(jwtConfig.getInitAdminName())
                 .password(passwordEncoder.encode(jwtConfig.getInitAdminPassword()))
@@ -31,3 +38,4 @@ public class CustomCommandLineRunner implements CommandLineRunner {
         log.info("Admin user created");
     }
 }
+
