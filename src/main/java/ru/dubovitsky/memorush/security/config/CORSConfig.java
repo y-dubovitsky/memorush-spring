@@ -16,14 +16,15 @@ public class CORSConfig {
 
     private final VariablesConfig variablesConfig;
 
+    //https://sysout.ru/nastrojka-cors-v-spring-security/
     @Bean
     public WebMvcConfigurer corsConfigurer() {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE")
-                        .allowedOrigins(variablesConfig.getAllowedOriginsArray().split(","));
+                        .allowedOrigins(variablesConfig.getAllowedOriginsArray())
+                        .allowedMethods("*");
             }
         };
     }
