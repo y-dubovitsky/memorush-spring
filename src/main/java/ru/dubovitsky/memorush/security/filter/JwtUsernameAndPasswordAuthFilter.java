@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import ru.dubovitsky.memorush.config.ApplicationVariablesConfig;
 import ru.dubovitsky.memorush.security.config.JwtConfig;
 import ru.dubovitsky.memorush.security.dto.request.UsernameAndPasswordAuthRequest;
 import ru.dubovitsky.memorush.security.dto.response.SuccessfulAuthenticationResponse;
@@ -24,12 +25,12 @@ import java.util.Date;
 
 public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final JwtConfig jwtConfig;
+    private final ApplicationVariablesConfig applicationVariablesConfig;
     private final AuthenticationManager authenticationManager;
 
-    public JwtUsernameAndPasswordAuthFilter(AuthenticationManager authenticationManager, JwtConfig jwtConfig) {
+    public JwtUsernameAndPasswordAuthFilter(AuthenticationManager authenticationManager, ApplicationVariablesConfig applicationVariablesConfig) {
         this.authenticationManager = authenticationManager;
-        this.jwtConfig = jwtConfig;
+        this.applicationVariablesConfig = applicationVariablesConfig;
     }
 
     @Override
@@ -78,12 +79,12 @@ public class JwtUsernameAndPasswordAuthFilter extends UsernamePasswordAuthentica
     //TODO Вынести в утилитный метод?
     private String createToken(Authentication authResult) {
         //! Create token
-        String token = jwtConfig.getTokenPrefix() + Jwts.builder()
+        String token = applicationVariablesConfig.getTokenPrefix() + Jwts.builder()
                 .setSubject(authResult.getName())
                 .claim("authorities", authResult.getAuthorities())
                 .setIssuedAt(new Date())
                 .setExpiration(java.sql.Date.valueOf(LocalDate.now().plusDays(28)))
-                .signWith(Keys.hmacShaKeyFor(jwtConfig.getSecurityKey().getBytes()))
+                .signWith(Keys.hmacShaKeyFor(applicationVariablesConfig.getSecurityKey().getBytes()))
                 .compact();
         return token;
     }

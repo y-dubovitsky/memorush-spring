@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import ru.dubovitsky.memorush.config.ApplicationVariablesConfig;
 import ru.dubovitsky.memorush.security.config.JwtConfig;
 
 import javax.servlet.FilterChain;
@@ -24,10 +25,10 @@ import java.util.stream.Collectors;
 //TODO Вынести все константы из текста в поля!
 public class JwtTokenVerifierFilter extends OncePerRequestFilter {
 
-    private final JwtConfig jwtConfig;
+    private final ApplicationVariablesConfig applicationVariablesConfig;
 
-    public JwtTokenVerifierFilter(JwtConfig jwtConfig) {
-        this.jwtConfig = jwtConfig;
+    public JwtTokenVerifierFilter(ApplicationVariablesConfig applicationVariablesConfig) {
+        this.applicationVariablesConfig = applicationVariablesConfig;
     }
 
     @Override
@@ -38,14 +39,14 @@ public class JwtTokenVerifierFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         String authHeader = request.getHeader("Authorization");
 
-        if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith(jwtConfig.getTokenPrefix())) {
+        if (Strings.isNullOrEmpty(authHeader) || !authHeader.startsWith(applicationVariablesConfig.getTokenPrefix())) {
             filterChain.doFilter(request, response);
             return; //! Necessarily
         }
 
-        String token = authHeader.replace(jwtConfig.getTokenPrefix(), "");
+        String token = authHeader.replace(applicationVariablesConfig.getTokenPrefix(), "");
         Jws<Claims> claimsJws = Jwts.parser()
-                .setSigningKey(Keys.hmacShaKeyFor(jwtConfig.getSecurityKey().getBytes()))
+                .setSigningKey(Keys.hmacShaKeyFor(applicationVariablesConfig.getSecurityKey().getBytes()))
                 .parseClaimsJws(token);
 
         Claims body = claimsJws.getBody();

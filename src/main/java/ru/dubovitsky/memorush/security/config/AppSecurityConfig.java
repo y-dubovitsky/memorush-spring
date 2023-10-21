@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ru.dubovitsky.memorush.config.VariablesConfig;
+import ru.dubovitsky.memorush.config.ApplicationVariablesConfig;
 import ru.dubovitsky.memorush.security.filter.JwtTokenVerifierFilter;
 import ru.dubovitsky.memorush.security.filter.JwtUsernameAndPasswordAuthFilter;
 
@@ -22,7 +22,7 @@ import ru.dubovitsky.memorush.security.filter.JwtUsernameAndPasswordAuthFilter;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AppSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
-    private final JwtConfig jwtConfig;
+    private final ApplicationVariablesConfig applicationVariablesConfig;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -30,21 +30,19 @@ public class AppSecurityConfig extends WebSecurityConfigurerAdapter implements W
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //! Проблема в том, что эти два фильтра не управляются спрингом, т.к. мы создали их через new()
-        http.addFilter(new JwtUsernameAndPasswordAuthFilter(authenticationManager(), jwtConfig));
-        http.addFilterAfter(new JwtTokenVerifierFilter(jwtConfig), JwtUsernameAndPasswordAuthFilter.class);
+        http.addFilter(new JwtUsernameAndPasswordAuthFilter(authenticationManager(), applicationVariablesConfig));
+        http.addFilterAfter(new JwtTokenVerifierFilter(applicationVariablesConfig), JwtUsernameAndPasswordAuthFilter.class);
     }
-
-    private final VariablesConfig variablesConfig;
 
     //https://sysout.ru/nastrojka-cors-v-spring-security/
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        log.info(String.format("CORS AllowedOrigins %s", variablesConfig.getAllowedOriginsArray()));
+        log.info(String.format("CORS AllowedOrigins %s", applicationVariablesConfig.getAllowedOriginsArray()));
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(variablesConfig.getAllowedOriginsArray())
+                        .allowedOrigins(applicationVariablesConfig.getAllowedOriginsArray())
                         .allowedMethods("*");
             }
         };

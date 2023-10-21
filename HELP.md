@@ -15,3 +15,6 @@ https://habr.com/ru/post/346782/
 
 ### the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate
 https://vladmihalcea.com/the-best-way-to-map-a-onetomany-association-with-jpa-and-hibernate/
+
+### Backup/Restore a dockerized PostgreSQL database
+https://stackoverflow.com/questions/24718706/backup-restore-a-dockerized-postgresql-database
