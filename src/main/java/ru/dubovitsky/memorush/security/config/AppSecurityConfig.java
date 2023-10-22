@@ -14,6 +14,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.dubovitsky.memorush.config.ApplicationVariablesConfig;
 import ru.dubovitsky.memorush.security.filter.JwtTokenVerifierFilter;
 import ru.dubovitsky.memorush.security.filter.JwtUsernameAndPasswordAuthFilter;
+import ru.dubovitsky.memorush.utils.ApplicationVariablesUtils;
 
 @Slf4j
 @Configuration

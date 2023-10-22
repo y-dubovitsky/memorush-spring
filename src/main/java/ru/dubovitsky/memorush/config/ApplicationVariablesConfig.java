@@ -1,16 +1,16 @@
 package ru.dubovitsky.memorush.config;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import ru.dubovitsky.memorush.utils.ApplicationVariablesUtils;
 
-@NoArgsConstructor
 @Getter @Setter
+@NoArgsConstructor
 @Configuration
 public class ApplicationVariablesConfig {
 
+    @Getter(AccessLevel.NONE)
     @Value("${application.cors.allowedOriginsArray}")
     private String allowedOriginsArray;
 
@@ -28,6 +28,10 @@ public class ApplicationVariablesConfig {
 
     @Value("${application.admin.password}")
     private String initAdminPassword;
+
+    public String[] getAllowedOriginsArray() {
+        return ApplicationVariablesUtils.splitStringToArrayByPattern(allowedOriginsArray);
+    }
 
 }
 
